@@ -1,4 +1,4 @@
-name: Compile Standalone Binaries
+name: Compile Cross-Platform Binaries
 
 on:
   push:
@@ -6,13 +6,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Compile on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-
+  # Job 1: Build the Linux Binary using Cython + GCC
+  build-linux:
+    name: Compile on Linux
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -25,42 +22,75 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install cython nuitka
+        pip install cython
 
-    - name: Install Linux Build Tools (Ubuntu Only)
-      if: matrix.os == 'ubuntu-latest'
+    - name: Install Linux Build Tools
       run: |
         sudo apt update
         sudo apt install -y build-essential python3-dev
 
-    # LINUX PIPELINE: Cython + GCC
-    - name: Translate Python to C via Cython (Linux Only)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        cython --embed -o find_0b.c find_0b.py
+    - name: Translate Python to C via Cython
+      run: cython --embed -o find_0b.c find_0b.py
 
-    - name: Compile with GCC (Linux Only)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        gcc -O2 find_0b.c $(python3-config --cflags --embed --ldflags) -o find_0b-linux
+    - name: Compile with GCC
+      run: gcc -O2 find_0b.c $(python3-config --cflags --embed --ldflags) -o find_0b-linux
 
-    # MAC PIPELINE: Nuitka (Creates a completely standalone app/binary bundle)
-    - name: Compile with Nuitka (Mac Only)
-      if: matrix.os == 'macos-latest'
-      run: |
-        python -m nuitka --onefile find_0b.py -o find_0b-mac
-
-    # UPLOAD ARTIFACTS
     - name: Upload Linux Binary
-      if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4
       with:
         name: find_0b-linux-binary
         path: find_0b-linux
 
-    - name: Upload Mac Binary
-      if: matrix.os == 'macos-latest'
+  # Job 2: Build the Intel Mac Binary using Nuitka (Runs on an Intel Cloud Server)
+  build-mac-intel:
+    name: Compile on Mac Intel
+    runs-on: macos-13
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install nuitka
+
+    - name: Compile with Nuitka for Intel
+      run: python -m nuitka --onefile --macos-target-arch=x86_64 find_0b.py -o find_0b-mac-intel
+
+    - name: Upload Intel Mac Binary
       uses: actions/upload-artifact@v4
       with:
-        name: find_0b-mac-binary
-        path: find_0b-mac
+        name: find_0b-mac-intel-binary
+        path: find_0b-mac-intel
+
+  # Job 3: Build the Apple Silicon Mac Binary using Nuitka (Runs on an ARM Cloud Server)
+  build-mac-arm:
+    name: Compile on Mac Apple Silicon
+    runs-on: macos-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install nuitka
+
+    - name: Compile with Nuitka for Apple Silicon
+      run: python -m nuitka --onefile --macos-target-arch=arm64 find_0b.py -o find_0b-mac-arm
+
+    - name: Upload Apple Silicon Mac Binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: find_0b-mac-arm-binary
+        path: find_0b-mac-arm
