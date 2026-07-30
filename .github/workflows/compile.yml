@@ -1,0 +1,62 @@
+name: Compile with Cython and GCC
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Compile on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install cython
+
+    - name: Install Linux Build Tools (Ubuntu Only)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential python3-dev
+
+    - name: Translate Python to C via Cython
+      run: |
+        cython --embed -o find_0b.c find_0b.py
+
+    - name: Compile with GCC (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        gcc -O2 find_0b.c $(pkg-config --cflags --libs python3) -o find_0b-linux
+
+    - name: Compile with GCC/Clang (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        gcc -O2 find_0b.c $(python3-config --cflags --embed --ldflags) -o find_0b-mac
+
+    - name: Upload Linux Binary
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: find_0b-linux-binary
+        path: find_0b-linux
+
+    - name: Upload Mac Binary
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: find_0b-mac-binary
+        path: find_0b-mac
