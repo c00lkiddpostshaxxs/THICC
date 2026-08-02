@@ -10,20 +10,13 @@
 **Macs:**   
 1. Open up Terminal, paste this command in
 ```bash
-curl -OL https://github.com/c00lkiddpostshaxxs/THICC/releases/download/v1.0.0/install.sh
+bash <(curl -fsSL https://github.com/c00lkiddpostshaxxs/THICC/releases/download/v1.0.0/install.sh)
 ```
-2. To get your THICC file, just run
-```bash
-chmod +x /path/to/install.sh
-```
-3. Run this
-```
-/path/to/install.sh
-```
-4. Eh you're done. Just don't share the THICC file with the internet, it'll hang your Mac. Like- ANY MAC. But you can move to the trash and recycle it.
-5. ***You can share the install.sh but don't share the THICC file as I said. Again, it'll hang your Mac. Any Mac can hang if you publish it on the internet. But you can delete the file.***
+2. Eh you're done. Just don't share the THICC file with the internet, it'll hang your Mac. Like- ANY MAC. But you can move to the trash and recycle it.
+3. ***Don't share the THICC file as I said. Again, it'll hang your Mac. Any Mac can hang if you publish it on the internet. But you can delete the file.***
 
-***I AM NOT RESPONSIBLE IF YOU BREAK YOUR MAC.***   
+> [!CAUTION]
+> ***I AM NOT RESPONSIBLE IF YOU BREAK YOUR MAC.***   
 
 **Linux:**   
 *Coming soon!*
