@@ -10,7 +10,7 @@
 **Macs:**   
 1. Open up Terminal, paste this command in
 ```bash
-curl -O https://github.com/c00lkiddpostshaxxs/THICC/releases/download/v1.0.0/install.sh
+curl -OL https://github.com/c00lkiddpostshaxxs/THICC/releases/download/v1.0.0/install.sh
 ```
 2. To get your THICC file, just run
 ```bash
