@@ -2,7 +2,8 @@
   <h1><b>THICC</b></h1>
   <p><i>Get ur THICC file XDD</i></p>
   <p><i>The install.sh will create a file around 36PB+. Just for fun.</p></i>
-  <p><i>Inspired by <a href="https://youtu.be/37-9yPnL9aY?si=yR2F_DjVWR2uJ_N-">"DAMN BOI HE THICC"</a></i></p>
+  <p><i>Inspired by <a href="https://www.youtube.com/watch?v=37-9yPnL9aY">"DAMN BOI HE THICC"</a> and <a href="https://www.youtube.com/watch?v=IU60BuUS3sQ">Endermanch's video</a></i></p>
+  <p><i>(Please consider giving me a coffee <a href="https://ko-fi.com/stup1dkidd">here</a>)</i></p>
 </div>
 
 ### Installation
